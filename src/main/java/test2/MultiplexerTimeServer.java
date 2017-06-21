@@ -57,10 +57,18 @@ public class MultiplexerTimeServer implements Runnable {
                 while(iterator.hasNext()){
                     selectionKey =  iterator.next();
                     iterator.remove();
-
+                    try {
+                        handleInput(selectionKey);
+                    } catch (IOException e) {
+                        if(selectionKey!=null) {
+                            selectionKey.cancel();
+                            if(selectionKey.channel()!=null)
+                                selectionKey.channel().close();
+                        }
+                    }
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Throwable t) {
+                t.printStackTrace();
             }
         }
 
@@ -84,8 +92,8 @@ public class MultiplexerTimeServer implements Runnable {
                 ServerSocketChannel serverSocketChannel = (ServerSocketChannel)key.channel();
                 SocketChannel socketChannel = serverSocketChannel.accept();
                 socketChannel.configureBlocking(false); //设置客户连接为非阻塞
-
                 socketChannel.register(selector,SelectionKey.OP_READ); //轮训read的key
+                System.out.println("time server receive a connection");
             }
 
             if(key.isReadable()){
