@@ -43,7 +43,7 @@ public class TimeClient {
             ChannelFuture channelFuture = bootstrap.connect(host,port).sync();
 
             //阻塞等待客户端链路关闭
-            channelFuture.channel().close().sync();
+            channelFuture.channel().closeFuture().sync();
         }finally {
             //退出程序,关闭nio线程管理组
             eventLoopGroup.shutdownGracefully();
