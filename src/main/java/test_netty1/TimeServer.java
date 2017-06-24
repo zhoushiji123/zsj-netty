@@ -26,6 +26,8 @@ public class TimeServer {
         serverBootstrap.group(bossGroup,workerGroup).channel(NioServerSocketChannel.class).
                 option(ChannelOption.SO_BACKLOG,1024).childHandler(new ChildChannelHandler());
 
+        System.out.println("time server start in port:"+port);
+
         //绑定端口，通过阻塞等待操作完成，完成后返回一个ChannelFuture，用于异步操作的通知回调
         ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
 
